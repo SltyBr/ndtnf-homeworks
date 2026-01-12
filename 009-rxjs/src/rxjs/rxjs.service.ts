@@ -8,36 +8,39 @@ import {
   take,
   Observable,
 } from "rxjs";
-import axios from "axios";
-import { ConfigService } from '@nestjs/config';
+import axios, { AxiosResponse } from "axios";
+import { GitHubPayload, GitHubRepo, GitLabRepo, Hub } from './interfaces/git';
 
 @Injectable()
 export class RxjsService {
   private readonly githubURL = "https://api.github.com/search/repositories?q=";
+  private readonly gitlabURL = "https://gitlab.com/api/v4/projects?search="
 
-  constructor(private readonly configService: ConfigService) {}
-
-  private getGithub(text: string, count: number): Observable<any> {
-    const token = this.configService.get<string>('GITHUB_TOKEN');
-    console.log(token)
-
-    return from(axios.get(`${this.githubURL}${text}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      }
-    }))
+  private getGithub(text: string, count: number): Observable<GitHubRepo> {
+    return from(axios.get(`${this.githubURL}${text}`))
       .pipe(
-        map((res: any) => res.data.items),
+        map((res: AxiosResponse<GitHubPayload>) => res.data.items),
         mergeAll(),
       )
       .pipe(take(count));
   }
 
-  async searchRepositories(text: string, hub: string): Promise<any> {
-    // Здесь можно добавить логику проверки на какой hub делать запрос
-    console.log("hub = ", hub);
-    const data$ = this.getGithub(text, 10).pipe(toArray());
+  private getGitlab(text: string, count: number): Observable<GitLabRepo> {
+    return from(axios.get(`${this.gitlabURL}${text}`))
+      .pipe(
+        map((res: AxiosResponse<GitLabRepo[]>) => res.data),
+        mergeAll(),
+      )
+      .pipe(take(count));
+  }
+
+  async searchRepositories(text: string, hub: Hub = 'github'): Promise<any> {
+    const data$: Observable<any> = hub === 'github' ?
+      this.getGithub(text, 1).pipe(toArray()) :
+      this.getGitlab(text, 1).pipe(toArray());
+
     data$.subscribe(() => {});
+
     return await firstValueFrom(data$);
   }
 }
