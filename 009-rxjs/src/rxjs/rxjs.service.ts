@@ -9,13 +9,23 @@ import {
   Observable,
 } from "rxjs";
 import axios from "axios";
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class RxjsService {
   private readonly githubURL = "https://api.github.com/search/repositories?q=";
 
+  constructor(private readonly configService: ConfigService) {}
+
   private getGithub(text: string, count: number): Observable<any> {
-    return from(axios.get(`${this.githubURL}${text}`))
+    const token = this.configService.get<string>('GITHUB_TOKEN');
+    console.log(token)
+
+    return from(axios.get(`${this.githubURL}${text}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    }))
       .pipe(
         map((res: any) => res.data.items),
         mergeAll(),
