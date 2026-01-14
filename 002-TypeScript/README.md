@@ -14,29 +14,27 @@
 #### 1. Напишите интерфейс к сущности «Книга» для разрабатываемого приложения «Библиотека» из модуля NDSE «Настройка окружения и Express.js».  
 На протяжении нескольких занятий мы будем поэтапно переписывать наш проект на TypeScript. Цель этого задания — только создание интерфейса без переписывания логики существующего приложения.
 
----
+export interface Book {
+	title: string,
+	description: string,
+	authors: string,
+	favorite: boolean,
+	fileCover: string,
+	fileName: string,
+	fileBook: string,
+}
 
 #### 2. Включите строгий режим (`strict`) в опциях компилятора, а параметр `strictNullChecks` выключите.
 
-<details>
-<summary>Что вы должны увидеть после выполнения шага:</summary>
-
-![](../002-TypeScript/step1.png)
-
-</details>
-
----
+При заданной конфигурации мы можем присвоить переменной значение undefined и null
 
 #### 3. Напишите абстрактный класс `BooksRepository` для разрабатываемого приложения «Библиотека» из первого модуля.  
 На данном этапе мы не будем его применять — цель этого задания заключается в создании первого абстрактного класса.
 
-<details>
-<summary>Методы, которые должны быть в `BooksRepository`:</summary>
-
-1. `createBook(book: Book): void` — создание книги.  
-2. `getBook(id: number): Book | null` — получение книги по ID.  
-3. `getBooks(): Book[]` — получение всех книг.  
-4. `updateBook(id: number, updatedBook: Book): void` — обновление книги.  
-5. `deleteBook(id: number): void` — удаление книги.
-
-</details>
+export abstract class BooksRepository {
+  abstract createBook(book: Book): void;
+  abstract getBook(id: number): Book | null;
+  abstract getBooks(): Book[]; 
+  abstract updateBook(id: number, updatedBook: Book): void;
+  abstract deleteBook(id: number): void;
+}
