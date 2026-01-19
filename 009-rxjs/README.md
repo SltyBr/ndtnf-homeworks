@@ -23,6 +23,8 @@
 https://api.github.com/search/repositories?q=${текст запроса}
 ```
 
+curl localhost:3000/rxjs/repositories/?text=hello
+
 **Задание 2.**
 
 С использованием RxJS сделайте запросы к любому общедоступному API (например, аналогичное с GitHub API [GitLab](https://docs.gitlab.com/ee/api/README.html#basic-usage)).
