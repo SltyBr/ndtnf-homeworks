@@ -1,4 +1,9 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, HttpException } from '@nestjs/common';
 
 @Controller()
-export class AppController {}
+export class AppController {
+  @Get('hello')
+  getHello() {
+    throw new HttpException('123', 400);
+  }
+}

@@ -6,22 +6,34 @@ import {
   Param,
   Post,
   Put,
+  Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { BookDocument } from './schemas/book.schema';
-import * as createBook from './interfaces/dto/create-book';
+import * as createBook from './interfaces/create-book';
+import { UpperCasePipe } from 'src/pipes/uppercase/uppercase.pipe';
+import { CreateBookDto } from './interfaces/dto/create-book';
 
 @Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Get()
-  async findAll() {
+  async findAll(@Query('test', new UpperCasePipe()) test: string) {
+    console.log('test ', test);
     return await this.booksService.findAll();
   }
 
   @Post()
-  create(@Body() body: createBook.CreateBookDto): Promise<BookDocument> {
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
+  create(@Body() body: CreateBookDto): Promise<BookDocument> {
     return this.booksService.create(body);
   }
 
