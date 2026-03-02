@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { BookCommentsModule } from './book-comments/book-comments.module';
+import { BookCommentsGatewayModule } from './book-comments-gateway/book-comments-gateway.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [BookCommentsModule, BookCommentsGatewayModule],
 })
 export class AppModule {}

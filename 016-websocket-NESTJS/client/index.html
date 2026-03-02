@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebSocket Comments Client</title>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+  <div>
+    <h2>Comments for Book 1</h2>
+    <div id="comments"></div>
+    <input type="text" id="commentInput" placeholder="Enter comment">
+    <button onclick="addComment()">Add Comment</button>
+  </div>
+
+  <script>
+    const socket = io('http://localhost:3000');
+
+    const getAllComments = (bookId) => {
+      socket.emit('getAllComments', bookId, (comments) => {
+        displayComments(comments);
+      });
+    }
+
+    const addComment = () => {
+      const comment = document.getElementById('commentInput').value;
+      socket.emit('addComment', {
+        bookId: 1,
+        comment: comment
+      }, (newComment) => {
+        document.getElementById('commentInput').value = '';
+        console.log('Comment added:', newComment);
+      });
+    }
+
+    // Слушаем обновления комментариев
+    socket.on('commentsUpdated', (data) => {
+      if (data.bookId === 1) {
+        displayComments(data.comments);
+      }
+    });
+
+    const displayComments = (comments) => {
+      const commentsDiv = document.getElementById('comments');
+      commentsDiv.innerHTML = comments.map(c => 
+        `<p><strong>Comment ${c.id}:</strong> ${c.comment}</p>`
+      ).join('');
+    }
+
+    getAllComments(1);
+  </script>
+</body>
+</html>
