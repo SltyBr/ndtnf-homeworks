@@ -39,7 +39,6 @@ export class BookCommentsGateway {
       data.comment,
     );
 
-    // Отправляем обновленный список комментариев всем клиентам
     this.server.emit('commentsUpdated', {
       bookId: data.bookId,
       comments: this.bookCommentsService.findAllBookComment(data.bookId),

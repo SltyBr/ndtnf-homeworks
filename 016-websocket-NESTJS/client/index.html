@@ -32,7 +32,6 @@
       });
     }
 
-    // Слушаем обновления комментариев
     socket.on('commentsUpdated', (data) => {
       if (data.bookId === 1) {
         displayComments(data.comments);
